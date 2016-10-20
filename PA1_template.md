@@ -1,6 +1,8 @@
 # Reproducible Research: Peer Assessment 1
 
 
+
+
 ## Loading and preprocessing the data
 
 ### Loading and preprocessing the data
@@ -40,7 +42,7 @@ hist(
 )
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](figures/unnamed-chunk-4-1.png)<!-- -->
 
 ### Mean and median of the total number of steps taken per day
 
@@ -81,7 +83,7 @@ plot(x = stepsPerInterval$interval,
      ylab = "Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](figures/unnamed-chunk-7-1.png)<!-- -->
 
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -138,7 +140,7 @@ hist(
 )
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](figures/unnamed-chunk-11-1.png)<!-- -->
 
 ### Mean and median total number of steps taken per day
 
@@ -205,5 +207,5 @@ library(lattice)
 xyplot(x ~ interval | day, data = dayStepsWeekdays, type = "l", layout = c(1, 2))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](figures/unnamed-chunk-16-1.png)<!-- -->
 
