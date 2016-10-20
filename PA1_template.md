@@ -1,20 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(fig.path='figures/')
-```
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 ### Loading and preprocessing the data
 
-```{r}
+
+```r
 data <- read.csv("activity.csv", colClasses = c("numeric", 
                                                 "Date", 
                                                 "numeric"))
@@ -22,7 +14,8 @@ data <- read.csv("activity.csv", colClasses = c("numeric",
 
 ### Helper filter
 
-```{r}
+
+```r
 filterNaSteps <- is.na(data$steps)
 ```
 
@@ -30,14 +23,16 @@ filterNaSteps <- is.na(data$steps)
 
 ### Total number of steps taken per day
 
-```{r}
+
+```r
 daySteps <- aggregate(data$steps[!filterNaSteps], 
                       by = list(date = data$date[!filterNaSteps]), 
                       FUN = sum)
 ```
 
 ### Histogram of the total number of steps taken each day
-```{r}
+
+```r
 hist(
   daySteps$x,
   main = "Total number of steps taken each day",
@@ -45,22 +40,35 @@ hist(
 )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
 ### Mean and median of the total number of steps taken per day
-```{r}
+
+```r
 dayStepsMean <- mean(daySteps$x, na.rm = TRUE)
 dayStepsMean
 ```
 
-```{r}
+```
+## [1] 10766.19
+```
+
+
+```r
 dayStepsMedian <- median(daySteps$x, na.rm = TRUE)
 dayStepsMedian
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
 ### Time series plot of the 5-minute interval and the average number of steps taken, averaged across all days 
 
-```{r}
+
+```r
 stepsPerInterval <- aggregate(data$steps[!filterNaSteps],
                               by = list(interval = data$interval[!filterNaSteps]),
                               FUN = mean)
@@ -73,24 +81,36 @@ plot(x = stepsPerInterval$interval,
      ylab = "Steps")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
 ### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 stepsPerInterval$interval[which.max(stepsPerInterval$x)]
+```
+
+```
+## [1] 835
 ```
 
 ## Imputing missing values
 
 ### Total number of missing values in the dataset
 
-```{r}
+
+```r
 sum(filterNaSteps)
+```
+
+```
+## [1] 2304
 ```
 
 ### Create a new dataset that is equal to the original dataset but with the missing data filled in (devised strategy: mean for that 5-minute interval)
 
-```{r results='hide'}
 
+```r
 library(plyr)
 
 dataWithIntervalMean <- arrange(merge(data,  
@@ -101,15 +121,12 @@ dataWithIntervalMean <- arrange(merge(data,
 dataNonNA <- data 
 
 dataNonNA$steps[filterNaSteps] <- dataWithIntervalMean$x[filterNaSteps]
-
-
-
 ```
 
 ### Histogram of the total number of steps taken each day
 
-```{r}
 
+```r
 dayStepsNonNA <- aggregate(dataNonNA$steps, 
                            by = list(dataNonNA = dataNonNA$date), 
                            FUN = sum)
@@ -119,31 +136,38 @@ hist(
   main = "Total number of steps taken each day",
   xlab = "Steps"
 )
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 ### Mean and median total number of steps taken per day
 
-```{r}
+
+```r
 dayStepsNonNAMean <- mean(dayStepsNonNA$x)
 dayStepsNonNAMean
 ```
 
-```{r}
+```
+## [1] 10766.19
+```
+
+
+```r
 dayStepsNonNAMedian <- median(dayStepsNonNA$x)
 dayStepsNonNAMedian
 ```
 
+```
+## [1] 10766.19
+```
+
 ### Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r include = FALSE}
-formatHelper <- function(number, round) {
-  format(round(number, round), nsmall = round)
-} 
-```
-Before imputing missing data the mean was `r formatHelper(dayStepsMean, 2)` and the median was `r formatHelper(dayStepsMedian, 2)`.
 
-After imputing missing the mean was `r formatHelper(dayStepsNonNAMean, 2)` and the median was `r formatHelper(dayStepsNonNAMedian, 2)`.
+Before imputing missing data the mean was 10766.19 and the median was 10765.00.
+
+After imputing missing the mean was 10766.19 and the median was 10766.19.
 
 There is not impact of imputing missing data on the mean value, but the median changes moving towards the mean value.
 
@@ -152,7 +176,8 @@ There is not impact of imputing missing data on the mean value, but the median c
 
 ### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
-```{r}
+
+```r
 isWeekend <- function(date) {
   isWeekend <- as.POSIXlt(date)$wday %in% c(0, 6)
   isWeekend
@@ -170,13 +195,15 @@ dayStepsWeekdays <- aggregate(dataNonNA$steps,
                               by = list(interval = dataNonNA$interval, 
                                         day = dataNonNA$day),
                               FUN = mean)
-
 ```
 
 ### Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
-```{r}
+
+```r
 library(lattice)
 xyplot(x ~ interval | day, data = dayStepsWeekdays, type = "l", layout = c(1, 2))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
